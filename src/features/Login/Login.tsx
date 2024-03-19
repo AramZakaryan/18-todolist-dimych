@@ -6,6 +6,8 @@ import { AppRootStateType } from '../../app/store'
 import { Navigate } from 'react-router-dom'
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField } from '@mui/material'
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
 export const Login = () => {
     const dispatch = useAppDispatch()
@@ -33,14 +35,14 @@ export const Login = () => {
         },
         onSubmit: async (values, formikHelpers) => {
             const res = await dispatch(loginTC(values))
-            if(res.type===loginTC.rejected.type){
-                // if(res.payload.){
-
+            if(loginTC.rejected.match(res)){
+                console.log(res)
+                if(res.payload?.fieldsErrors?.length){
+                    const error = res.payload?.fieldsErrors[0]
+                    formikHelpers.setFieldError(error?.field, error.error)
                 }
-
-                // formikHelpers.setFieldError("email", res.payload.toString() )
             }
-        // },
+        },
     })
 
     if (isLoggedIn) {
