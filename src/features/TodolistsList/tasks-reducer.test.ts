@@ -1,4 +1,4 @@
-import {addTaskAC, removeTaskAC, setTasksAC, tasksReducer, TasksStateType, updateTaskAC} from './tasks-reducer'
+import {addTaskTC, fetchTasksTC, removeTaskTC, tasksReducer, TasksStateType, updateTaskTC} from './tasks-reducer'
 
 import {addTodolistAC, removeTodolistAC, setTodolistsAC} from './todolists-reducer'
 import {TaskPriorities, TaskStatuses} from '../../api/todolists-api'
@@ -38,7 +38,10 @@ beforeEach(() => {
 });
 
 test('correct task should be deleted from correct array', () => {
-    const action = removeTaskAC({taskId: "2", todolistId: "todolistId2"});
+    const action = removeTaskTC.fulfilled(
+        {taskId: "2", todolistId: "todolistId2"},
+        "requestId",
+        {taskId: "2", todolistId: "todolistId2"});
 
     const endState = tasksReducer(startState, action)
 
@@ -48,20 +51,25 @@ test('correct task should be deleted from correct array', () => {
 });
 test('correct task should be added to correct array', () => {
     //const action = addTaskAC("juce", "todolistId2");
-    const action = addTaskAC({
-        task: {
-            todoListId: "todolistId2",
+    const action = addTaskTC.fulfilled({
+            task: {
+                todoListId: "todolistId2",
+                title: "juce",
+                status: TaskStatuses.New,
+                addedDate: "",
+                deadline: "",
+                description: "",
+                order: 0,
+                priority: 0,
+                startDate: "",
+                id: "id exists"
+            }
+        },
+        "requestId",
+        {
             title: "juce",
-            status: TaskStatuses.New,
-            addedDate: "",
-            deadline: "",
-            description: "",
-            order: 0,
-            priority: 0,
-            startDate: "",
-            id: "id exists"
-        }
-    });
+            todolistId: "todolistId2"
+        });
 
     const endState = tasksReducer(startState, action)
 
@@ -72,13 +80,22 @@ test('correct task should be added to correct array', () => {
     expect(endState["todolistId2"][0].status).toBe(TaskStatuses.New);
 });
 test('status of specified task should be changed', () => {
-    const action = updateTaskAC({
-        taskId: "2",
-        model: {
-            status: TaskStatuses.New
+    const action = updateTaskTC.fulfilled({
+            taskId: "2",
+            model: {
+                status: TaskStatuses.New
+            },
+            todolistId: "todolistId2"
         },
-        todolistId: "todolistId2"
-    });
+        "requestID"
+        , {
+            taskId: "2",
+            model: {
+                status: TaskStatuses.New
+            },
+            todolistId: "todolistId2"
+        }
+    );
 
     const endState = tasksReducer(startState, action)
 
@@ -86,13 +103,21 @@ test('status of specified task should be changed', () => {
     expect(endState["todolistId2"][1].status).toBe(TaskStatuses.New);
 });
 test('title of specified task should be changed', () => {
-    const action = updateTaskAC({
-        taskId: "2",
-        model: {
-            title: "yogurt"
+    const action = updateTaskTC.fulfilled({
+            taskId: "2",
+            model: {
+                title: "yogurt"
+            },
+            todolistId: "todolistId2"
         },
-        todolistId: "todolistId2"
-    });
+        "requestId",
+        {
+            taskId: "2",
+            model: {
+                title: "yogurt"
+            },
+            todolistId: "todolistId2"
+        });
 
     const endState = tasksReducer(startState, action)
 
@@ -155,7 +180,10 @@ test('empty arrays should be added when we set todolists', () => {
     expect(endState['2']).toBeDefined()
 })
 test('tasks should be added for todolist', () => {
-    const action = setTasksAC({tasks:startState["todolistId1"],todolistId: "todolistId1"});
+    const action = fetchTasksTC.fulfilled({
+        tasks: startState["todolistId1"],
+        todolistId: "todolistId1"
+    }, "requestId", "todolistId1");
 
     const endState = tasksReducer({
         "todolistId2": [],
