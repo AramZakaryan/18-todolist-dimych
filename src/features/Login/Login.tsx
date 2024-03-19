@@ -33,8 +33,14 @@ export const Login = () => {
         },
         onSubmit: async (values, formikHelpers) => {
             const res = await dispatch(loginTC(values))
-            formikHelpers.setFieldError("email", res. )
-        },
+            if(res.type===loginTC.rejected.type){
+                // if(res.payload.){
+
+                }
+
+                // formikHelpers.setFieldError("email", res.payload.toString() )
+            }
+        // },
     })
 
     if (isLoggedIn) {

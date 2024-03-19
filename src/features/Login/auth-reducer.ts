@@ -50,8 +50,20 @@ export const setIsLoggedInAC = slice.actions.setIsLoggedInAC
 
 ////////// Thunks
 
-export const loginTC = createAsyncThunk("auth/login",
-    (data: LoginParamsType, thunkAPI) => {
+export const loginTC = createAsyncThunk<
+    { isLoggedIn: boolean },
+    LoginParamsType,
+    {
+        rejectValue: {
+            errors: string[],
+            fieldsErrors?: {
+                field: string,
+                error: string
+            }[]
+        }
+    }
+>("auth/login",
+    (data, thunkAPI) => {
         thunkAPI.dispatch(setAppStatusAC({status: 'loading'}))
         return authAPI.login(data)
             .then(res => {
