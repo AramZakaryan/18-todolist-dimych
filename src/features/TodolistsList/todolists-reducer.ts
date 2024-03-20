@@ -7,11 +7,11 @@ import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {clearTasksAndTodolists} from "../../common/actions/common.actions";
 import {AxiosError} from "axios";
 
-const initialState: Array<TodolistDomainType> = []
+// const initialState: Array<TodolistDomainType> = []
 
 const slice = createSlice({
     name: "todolist",
-    initialState,
+    initialState: [] as TodolistDomainType[],
     reducers: {
         // removeTodolistAC(state,
         //                  action: PayloadAction<{ id: string }>) {
@@ -61,7 +61,7 @@ const slice = createSlice({
         //     return []
         // }
     },
-    extraReducers: (builder) => {
+    extraReducers: builder => {
         builder
             .addCase(clearTasksAndTodolists, () => {
                 return []
